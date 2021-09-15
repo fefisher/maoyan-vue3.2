@@ -5,7 +5,6 @@ const resolve = (dir) => {
 
 module.exports = {
     publicPath: '/',
-    assertsDir: 'static',
     devServer: {
         overlay: {
             warnings: false,
