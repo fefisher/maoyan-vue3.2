@@ -15,6 +15,7 @@ import RightPanel from '@/components/RightPanel';
 import API from '@/api/data.js';
 import { onMounted, onUnmounted, reactive, ref, nextTick } from 'vue';
 import { uuid } from '@/settings';
+import store from '@/store';
 
 let movieList = reactive([]);
 let rightView = reactive({ movieInfos: {}, nationBoxInfos: {}, currentItem: {} });
@@ -31,44 +32,67 @@ const getPageData = () => {
   API.getMovieData(params).then(resData => {
     if (!resData || resData === '\n') return;
     let {
-      movieList: { list, nationBoxInfo },
-      movieInfo
+      movieList: { list, nationBoxInfo }
     } = resData;
-    showPanel.value = true;
-    list.forEach((item, index) => {
-      item.checked = index === 0;
-    });
+    list.forEach((item, index) => (item.sortId = index < 9 ? '0' + (+index + 1) : +index + 1));
+
     movieList.value = list;
     rightView.nationBoxInfos.value = nationBoxInfo;
     if (firstEnter.value) {
-      rightView.movieInfos.value = movieInfo.movieInfo;
-      rightView.currentItem.value = list[0];
+      const movieId_0 = list[0].movieInfo.movieId;
+      const localMovieId = sessionStorage.getItem('__movieId__');
+      const starId = localMovieId ? localMovieId : movieId_0;
+      store.commit('SET_STARID', starId);
+
+      list.forEach(item => (item.checked = item.movieInfo.movieId === +starId));
+      const currentItem = list.find(v => v.checked);
+      changeMovie(currentItem);
+    } else {
+      sortList(movieList.value, store.state.movieId);
     }
+
     firstEnter.value = false;
   });
 };
 //点击列表
-const changeMovie = item => {
-  rightView.currentItem.value = movieList.value.find(v => v.movieInfo.movieId === item.movieInfo.movieId);
-
+const changeMovie = async item => {
+  const movieId = item.movieInfo.movieId;
+  store.commit('SET_STARID', movieId);
+  rightView.currentItem.value = item;
+  sortList(movieList.value, movieId);
   let params = new URLSearchParams();
-  params.append('movieId', item.movieInfo.movieId);
+  params.append('movieId', movieId);
   params.append('orderType', 0);
   params.append('uuid', uuid);
   params.append('timestamp', new Date().getTime());
-  API.getMovieDetail(params).then(resData => {
-    if (!resData) return;
-    const { movieInfo } = resData.data;
-    rightView.movieInfos.value = movieInfo;
-    nextTick();
-  });
+  const data = await API.getMovieDetail(params);
+  if (!data) return;
+  const { movieInfo } = data.data;
+  rightView.movieInfos.value = movieInfo;
+
+  !firstEnter.value && (showPanel.value = true);
+  //滚动到列表顶部
+  document.querySelector('#movieList').scrollIntoView();
 };
+
+const sortList = (list, movieId) => {
+  const starItem = list.find(v => v.movieInfo.movieId === movieId);
+  const starIndex = list.findIndex(v => v.movieInfo.movieId === movieId);
+  list.splice(starIndex, 1);
+  const newList = list.sort((a, b) => {
+    return Number(a.sortId) - Number(b.sortId);
+  });
+  newList.unshift(starItem);
+  newList.forEach(item => (item.checked = item.movieInfo.movieId === movieId));
+  movieList.value = list;
+};
+
 let timeer = null;
 onMounted(() => {
   getPageData();
   timeer = setInterval(() => {
     getPageData();
-  }, 5 * 1000);
+  }, 10 * 1000);
 });
 onUnmounted(() => {
   clearInterval(timeer);

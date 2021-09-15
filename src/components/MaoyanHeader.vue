@@ -20,11 +20,11 @@
 
 <script setup>
 import screenfull from 'screenfull';
-import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
 
 const navTypes = reactive([
-  { type: 1, name: '综合票房', active: true },
-  { type: 2, name: '电影票房', active: false },
+  { type: 1, name: '综合票房', active: false },
+  { type: 2, name: '电影票房', active: true },
   { type: 3, name: '网播热度', active: false },
   { type: 4, name: '电视收视', active: false }
 ]);

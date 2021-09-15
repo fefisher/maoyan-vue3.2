@@ -83,7 +83,7 @@ const props = defineProps({
 const movieInfos = props.movieInfos;
 const nationBoxInfos = props.nationBoxInfos;
 const checkedItem = props.currentItem;
-const postImgUrl = computed(() => movieInfos.value.imgUrl.replace('w.h/', '') + '@165w_220h');
+const postImgUrl = computed(() => (movieInfos ? movieInfos.value.imgUrl.replace('w.h/', '') + '@165w_220h' : ''));
 </script>
 <style lang="scss" scoped>
 .right-panel {

@@ -8,7 +8,7 @@
         </span>
       </div>
     </div>
-    <table class="dashboard-table table-header">
+    <table class="dashboard-table table-header" id="tableHeader">
       <thead>
         <tr>
           <th class="moviename-th">
@@ -36,14 +36,14 @@
       </thead>
     </table>
     <div class="movielist-container">
-      <div class="movielist">
+      <div class="movielist" id="movieList">
         <table class="dashboard-table">
           <tbody>
-            <tr v-for="(item, index) in movieList.value" :key="item.movieInfo.movieId" @click="showCurrentDetail(item)">
+            <tr v-for="item in movieList.value" :key="item.movieInfo.movieId" @click="showCurrentDetail(item)">
               <td class="moviename-td">
                 <div class="movie-desc">
                   <div class="moviename-num">
-                    <p class="moviename-index">{{ index < 9 ? '0' + (+index + 1) : +index + 1 }}</p>
+                    <p class="moviename-index">{{ item.sortId }}</p>
                     <p class="moviename-star">
                       <span class="sprite" :class="[item.checked ? 'star' : 'star-gray']"> </span>
                     </p>
