@@ -1,0 +1,29 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #fff;
+  font-size: 0.3rem;
+}
+p {
+  line-height: 1.4;
+  margin: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+//@font-face {
+  // font-family: 'mtsi-font';
+  // src: url('../assets/fonts/6108cd40.eot') format('embedded-opentype'), url('../assets/fonts/6108cd40.woff');  
+//}
+
+@font-face {
+  font-family: 'mtsi-font';
+  src: url('//s3plus.meituan.net/v1/mss_73a511b8f91f43d0bdae92584ea6330b/font/3fe838e8.eot');
+  src: url('//s3plus.meituan.net/v1/mss_73a511b8f91f43d0bdae92584ea6330b/font/3fe838e8.eot?#iefix')
+      format('embedded-opentype'),
+    url('//s3plus.meituan.net/v1/mss_73a511b8f91f43d0bdae92584ea6330b/font/3fe838e8.woff');
+}
+
+.mtsi-num {
+  font-family: 'mtsi-font';
+}
